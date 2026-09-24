@@ -60,7 +60,7 @@ function show(id){hideAll();document.getElementById(id).style.display='block';if
 function preview(id){
   const b=books.find(x=>x.id===id);
   if(b.pdf){
-    openModal(b.title,`<div style="height:80vh"><iframe src="${encodeURI(b.pdf)}" style="width:100%;height:100%;border:0"></iframe></div>`);
+    openModal(b.title,`<div style="height:80vh"><iframe src="/ExamBooster_India/${encodeURI(b.pdf)}" style="width:100%;height:100%;border:0"></iframe></div>`);
     return;
   }
   openModal(b.title,`<div class="reader"><span class="pill">FREE PREVIEW</span><h1>${b.title}</h1><p>${b.desc}</p><div class="success">📖 This is the demo reader.</div></div>`);
