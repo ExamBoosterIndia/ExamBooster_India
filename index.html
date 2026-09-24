@@ -57,7 +57,14 @@ function renderBooks(cat='all'){const g=document.getElementById('bookgrid');g.in
 function filterBooks(cat,btn){document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active'));btn.classList.add('active');renderBooks(cat)}
 function hideAll(){['home','books','library','login'].forEach(x=>document.getElementById(x).style.display='none')}
 function show(id){hideAll();document.getElementById(id).style.display='block';if(id==='books')renderBooks();window.scrollTo(0,0)}
-function preview(id){const b=books.find(x=>x.id===id);openModal(b.title,`<div class="reader"><span class="pill">FREE PREVIEW</span><h1>${b.title}</h1><p>${b.desc}</p><div class="success">📖 This is the demo reader. In production, the actual protected PDF would render here without a normal download link.</div><h2>Sample Chapter</h2><p>Important concepts are presented here in a clean reading interface. You can replace this demo text with your own copyrighted study material.</p><h3>Practice Questions</h3><ol><li>Define the key concept.</li><li>Explain the main features with examples.</li><li>Write a short note on an important topic.</li></ol></div>`)}
+function preview(id){
+  const b=books.find(x=>x.id===id);
+  if(b.pdf){
+    openModal(b.title,`<div style="height:80vh"><iframe src="${encodeURI(b.pdf)}" style="width:100%;height:100%;border:0"></iframe></div>`);
+    return;
+  }
+  openModal(b.title,`<div class="reader"><span class="pill">FREE PREVIEW</span><h1>${b.title}</h1><p>${b.desc}</p><div class="success">📖 This is the demo reader.</div></div>`);
+}
 function buy(id){const b=books.find(x=>x.id===id);openModal('Checkout',`<div class="checkout"><h2>${b.title}</h2><p class="muted">Demo price: ₹${b.price}</p><p>Production checkout will connect this button to Razorpay. After verified payment, the backend should grant this book to the buyer's account.</p><div class="success">🔒 Demo mode: no real money is charged.</div><br><button class="btn primary" onclick="demoPurchase(${b.id})">Simulate Successful Payment</button></div>`)}
 function demoPurchase(id){const b=books.find(x=>x.id===id);localStorage.setItem('demoPurchase',JSON.stringify(b));closeModal();openLibrary(b)}
 function openLibrary(b){hideAll();document.getElementById('library').style.display='block';document.getElementById('libraryBox').innerHTML=`<div class="card" style="text-align:left"><span class="pill">PURCHASED — DEMO</span><h3>${b.title}</h3><p class="muted">Access is tied to the demo browser.</p><button class="btn primary" onclick="preview(${b.id})">READ BOOK</button></div>`}
