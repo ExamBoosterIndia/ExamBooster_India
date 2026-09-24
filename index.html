@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Exam Booster India — Digital Study Store</title>
+<style>
+:root{--navy:#12264a;--blue:#2e66b8;--gold:#f3b72b;--bg:#f6f8fc;--text:#182338;--muted:#68758a;--line:#e1e7f0}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;background:var(--bg);color:var(--text)}
+button,a{font:inherit}.top{background:var(--navy);color:#fff;padding:14px 5%;font-size:13px;text-align:center}
+nav{background:#fff;border-bottom:1px solid var(--line);padding:16px 5%;display:flex;align-items:center;justify-content:space-between;gap:20px;position:sticky;top:0;z-index:10}.brand{font-weight:900;font-size:22px;color:var(--navy)}.brand span{color:var(--blue)}
+.navlinks{display:flex;gap:8px;align-items:center}.navlinks button{border:0;background:none;padding:9px 12px;cursor:pointer;color:#46536a}
+.primary{background:var(--blue)!important;color:#fff!important;border-radius:9px!important}.outline{border:1px solid var(--line)!important;border-radius:9px!important;background:#fff!important}
+.hero{padding:75px 5%;background:linear-gradient(135deg,#eef4ff,#fff);display:grid;grid-template-columns:1.3fr .7fr;gap:40px;align-items:center}.eyebrow{color:var(--blue);font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:13px}.hero h1{font-size:clamp(38px,6vw,68px);line-height:1.02;margin:12px 0}.hero p{font-size:18px;color:var(--muted);line-height:1.65;max-width:650px}.hero-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:28px;box-shadow:0 20px 50px #14284b16}.hero-card .bookmini{height:230px;border-radius:15px;background:linear-gradient(145deg,#142a53,#4e87d4);display:flex;align-items:center;justify-content:center;color:#fff;text-align:center;font-size:25px;font-weight:900;padding:20px}
+.wrap{padding:45px 5%}.row{display:flex;justify-content:space-between;gap:20px;align-items:end}.title{font-size:32px;margin:0 0 6px}.muted{color:var(--muted)}
+.categories{display:flex;gap:10px;flex-wrap:wrap;margin:25px 0}.cat{padding:10px 15px;border:1px solid var(--line);border-radius:999px;background:#fff;cursor:pointer}.cat.active{background:var(--navy);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 8px 28px #14284b0a}.cover{height:170px;border-radius:13px;background:linear-gradient(145deg,#162b54,#4e84cf);display:flex;align-items:center;justify-content:center;color:#fff;text-align:center;font-weight:900;font-size:22px;padding:20px}.pill{display:inline-block;background:#edf3ff;color:#315eaa;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:800;margin-top:14px}.price{font-size:23px;font-weight:900;margin:13px 0}.actions{display:flex;gap:9px}.btn{border:0;padding:11px 14px;border-radius:9px;cursor:pointer;font-weight:800}.btn.primary{background:var(--blue);color:#fff}.btn.secondary{background:#eef2f7;color:#24324b}
+.feature{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.feature .card{padding:24px}.icon{font-size:28px}
+footer{background:#111b2d;color:#dce5f5;padding:45px 5%;margin-top:20px}
+.modal{display:none;position:fixed;inset:0;background:#09111ed9;z-index:50;padding:3vh 4vw}.modalbox{background:#fff;border-radius:15px;max-width:1000px;margin:auto;height:94vh;overflow:auto}.modalhead{display:flex;justify-content:space-between;align-items:center;padding:15px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff;z-index:2}.close{border:0;background:#eef1f5;padding:8px 11px;border-radius:8px;cursor:pointer}.reader{max-width:820px;margin:auto;padding:35px;line-height:1.75}.reader h1{font-size:32px}.watermark{position:fixed;right:18px;bottom:18px;opacity:.15;font-weight:900;pointer-events:none}
+.checkout{max-width:560px;margin:50px auto;padding:28px}.field{display:block;width:100%;padding:13px;border:1px solid var(--line);border-radius:9px;margin:8px 0 15px}.success{background:#ecf9f0;border:1px solid #b9e2c6;padding:14px;border-radius:10px}
+.library-empty{padding:35px;text-align:center;border:1px dashed #cbd4e2;border-radius:15px;background:#fff}
+@media(max-width:800px){.hero{grid-template-columns:1fr;padding:50px 5%}.feature{grid-template-columns:1fr}.navlinks button:not(.primary){display:none}.hero-card{display:none}}
+</style>
+</head>
+<body>
+<div class="top">📚 Exam-ready digital books • Read your purchases online</div>
+<nav><div class="brand">Exam Booster <span>India</span></div><div class="navlinks"><button onclick="show('home')">Home</button><button onclick="show('books')">Books</button><button onclick="show('library')">My Library</button><button class="primary btn" onclick="show('login')">Login</button></div></nav>
+
+<main id="home">
+<section class="hero"><div><div class="eyebrow">Study smarter</div><h1>Your exam preparation, in one place.</h1><p>Revision notes, practice material and workbooks for school students, competitive exams and spoken English learners.</p><button class="btn primary" onclick="show('books')">Explore Books</button></div><div class="hero-card"><div class="bookmini">CLASS 9<br>SST<br>MIDTERM<br>BOOSTER</div><p><b>Website reader</b></p><p class="muted">Demo access flow: preview → buy → library → read online.</p></div></section>
+<section class="wrap"><div class="feature"><div class="card"><div class="icon">📖</div><h3>Read Online</h3><p class="muted">The planned production version uses a protected browser reader instead of a public PDF download link.</p></div><div class="card"><div class="icon">💳</div><h3>Easy Checkout</h3><p class="muted">Razorpay can later be connected for UPI, cards and other supported payment methods.</p></div><div class="card"><div class="icon">🔐</div><h3>My Library</h3><p class="muted">Purchased books can appear inside each student's account.</p></div></div></section>
+</main>
+
+<section class="wrap" id="books" style="display:none"><div class="row"><div><h2 class="title">Book Store</h2><p class="muted">Choose a category and open a book.</p></div></div><div class="categories"><button class="cat active" onclick="filterBooks('all',this)">All</button><button class="cat" onclick="filterBooks('sst',this)">School NCERT / SST</button><button class="cat" onclick="filterBooks('upsc',this)">UPSC / BPSC</button><button class="cat" onclick="filterBooks('english',this)">Spoken English</button></div><div class="grid" id="bookgrid"></div></section>
+
+<section class="wrap" id="library" style="display:none"><h2 class="title">My Library</h2><p class="muted">Books purchased by the signed-in student will appear here.</p><div class="library-empty" id="libraryBox">No purchases yet. Demo purchases can be simulated from a book page.</div></section>
+
+<section class="wrap" id="login" style="display:none"><div class="card checkout"><h2>Student Login</h2><p class="muted">Demo only — real authentication requires a backend.</p><label>Email</label><input class="field" type="email" placeholder="student@example.com"><label>Password</label><input class="field" type="password" placeholder="••••••••"><button class="btn primary" onclick="show('library')">Login Demo</button></div></section>
+
+<div class="modal" id="modal"><div class="modalbox"><div class="modalhead"><strong id="modalTitle">Book</strong><button class="close" onclick="closeModal()">✕</button></div><div id="modalBody"></div></div></div>
+<footer><b>Exam Booster India</b><p>Educational digital resources • School • UPSC/BPSC • Spoken English</p></footer>
+
+<script>
+const books=[
+{id:1,cat:'sst',title:'Class 9 SST Midterm Booster',price:99,cover:'CLASS 9\\nSST\\nMIDTERM BOOSTER',desc:'Crisp notes, MCQs, important questions and revision material.'},
+{id:2,cat:'sst',title:'Class 10 SST Important Questions',price:99,cover:'CLASS 10\\nSST\\nIMPORTANT Qs',desc:'Exam-focused questions and revision support.'},
+{id:3,cat:'upsc',title:'BPSC Prelims Booster',price:149,cover:'BPSC\\nPRELIMS\\nBOOSTER',desc:'Revision-focused practice material for BPSC preparation.'},
+{id:4,cat:'upsc',title:'UPSC Political Science Revision',price:199,cover:'UPSC\\nPOLITICAL\\nSCIENCE',desc:'A sample product card for a future UPSC eBook.'},
+{id:5,cat:'english',title:'30-Day Spoken English Workbook',price:99,cover:'30-DAY\\nSPOKEN\\nENGLISH',desc:'Daily grammar, vocabulary and speaking practice.'}
+];
+function renderBooks(cat='all'){const g=document.getElementById('bookgrid');g.innerHTML=books.filter(b=>cat==='all'||b.cat===cat).map(b=>`<div class="card"><div class="cover">${b.cover.replaceAll('\\n','<br>')}</div><span class="pill">${b.cat==='sst'?'School NCERT / SST':b.cat==='upsc'?'UPSC / BPSC':'Spoken English'}</span><h3>${b.title}</h3><p class="muted">${b.desc}</p><div class="price">₹${b.price}</div><div class="actions"><button class="btn secondary" onclick="preview(${b.id})">Preview</button><button class="btn primary" onclick="buy(${b.id})">Buy Now</button></div></div>`).join('')}
+function filterBooks(cat,btn){document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active'));btn.classList.add('active');renderBooks(cat)}
+function hideAll(){['home','books','library','login'].forEach(x=>document.getElementById(x).style.display='none')}
+function show(id){hideAll();document.getElementById(id).style.display='block';if(id==='books')renderBooks();window.scrollTo(0,0)}
+function preview(id){const b=books.find(x=>x.id===id);openModal(b.title,`<div class="reader"><span class="pill">FREE PREVIEW</span><h1>${b.title}</h1><p>${b.desc}</p><div class="success">📖 This is the demo reader. In production, the actual protected PDF would render here without a normal download link.</div><h2>Sample Chapter</h2><p>Important concepts are presented here in a clean reading interface. You can replace this demo text with your own copyrighted study material.</p><h3>Practice Questions</h3><ol><li>Define the key concept.</li><li>Explain the main features with examples.</li><li>Write a short note on an important topic.</li></ol></div>`)}
+function buy(id){const b=books.find(x=>x.id===id);openModal('Checkout',`<div class="checkout"><h2>${b.title}</h2><p class="muted">Demo price: ₹${b.price}</p><p>Production checkout will connect this button to Razorpay. After verified payment, the backend should grant this book to the buyer's account.</p><div class="success">🔒 Demo mode: no real money is charged.</div><br><button class="btn primary" onclick="demoPurchase(${b.id})">Simulate Successful Payment</button></div>`)}
+function demoPurchase(id){const b=books.find(x=>x.id===id);localStorage.setItem('demoPurchase',JSON.stringify(b));closeModal();openLibrary(b)}
+function openLibrary(b){hideAll();document.getElementById('library').style.display='block';document.getElementById('libraryBox').innerHTML=`<div class="card" style="text-align:left"><span class="pill">PURCHASED — DEMO</span><h3>${b.title}</h3><p class="muted">Access is tied to the demo browser.</p><button class="btn primary" onclick="preview(${b.id})">READ BOOK</button></div>`}
+function openModal(title,body){document.getElementById('modalTitle').textContent=title;document.getElementById('modalBody').innerHTML=body;document.getElementById('modal').style.display='block';document.body.style.overflow='hidden'}
+function closeModal(){document.getElementById('modal').style.display='none';document.body.style.overflow='auto'}
+renderBooks();
+</script>
+</body></html>
