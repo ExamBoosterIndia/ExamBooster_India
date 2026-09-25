@@ -36,7 +36,23 @@ footer{background:#111b2d;color:#dce5f5;padding:45px 5%;margin-top:20px}
 <section class="wrap"><div class="feature"><div class="card"><div class="icon">📖</div><h3>Read Online</h3><p class="muted">The planned production version uses a protected browser reader instead of a public PDF download link.</p></div><div class="card"><div class="icon">💳</div><h3>Easy Checkout</h3><p class="muted">Razorpay can later be connected for UPI, cards and other supported payment methods.</p></div><div class="card"><div class="icon">🔐</div><h3>My Library</h3><p class="muted">Purchased books can appear inside each student's account.</p></div></div></section>
 </main>
 
-<section class="wrap" id="books" style="display:none"><div class="row"><div><h2 class="title">Book Store</h2><p class="muted">Choose a category and open a book.</p></div></div><div class="categories"><button class="cat active" onclick="filterBooks('all',this)">All</button><button class="cat" onclick="filterBooks('sst',this)">School NCERT / SST</button><button class="cat" onclick="filterBooks('upsc',this)">UPSC / BPSC</button><button class="cat" onclick="filterBooks('english',this)">Spoken English</button></div><div class="grid" id="bookgrid"></div></section>
+<section class="wrap" id="books" style="display:none"><div class="row"><div><h2 class="title">Book Store</h2><p class="muted">Choose a category and open a book.</p></div></div><div class="categories">
+  <button class="cat active" onclick="filterBooks('all',this)">All Books</button>
+  <button class="cat" onclick="filterBooks('sst',this)">School & NCERT</button>
+  <button class="cat" onclick="filterBooks('upsc',this)">UPSC & BPSC</button>
+  <button class="cat" onclick="filterBooks('competitive',this)">Competitive Exams</button>
+  <button class="cat" onclick="filterBooks('english',this)">Spoken English</button>
+  <button class="cat" onclick="filterBooks('story',this)">Story Books</button>
+  <button class="cat" onclick="filterBooks('novel',this)">Novels</button>
+  <button class="cat" onclick="filterBooks('romance',this)">Romance</button>
+  <button class="cat" onclick="filterBooks('thriller',this)">Mystery & Thriller</button>
+  <button class="cat" onclick="filterBooks('horror',this)">Horror</button>
+  <button class="cat" onclick="filterBooks('children',this)">Children's Books</button>
+  <button class="cat" onclick="filterBooks('selfhelp',this)">Self-Help</button>
+  <button class="cat" onclick="filterBooks('business',this)">Business & Finance</button>
+  <button class="cat" onclick="filterBooks('gk',this)">General Knowledge</button>
+  <button class="cat" onclick="filterBooks('other',this)">Other eBooks</button>
+</div></section>
 
 <section class="wrap" id="library" style="display:none"><h2 class="title">My Library</h2><p class="muted">Books purchased by the signed-in student will appear here.</p><div class="library-empty" id="libraryBox">No purchases yet. Demo purchases can be simulated from a book page.</div></section>
 
