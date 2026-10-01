@@ -134,10 +134,17 @@
         .eq("user_id", data.user.id)
         .maybeSingle();
 
-    if(adminError || !admin){
-      await supabaseClient.auth.signOut();
-      message.textContent = "You are not authorized as admin.";
-      return;
+    if(adminError){
+  console.error("Admin check error:", adminError);
+  message.textContent = "Admin check error: " + adminError.message;
+  return;
+}
+
+if(!admin){
+  await supabaseClient.auth.signOut();
+  message.textContent = "Admin record not found.";
+  return;
+}
     }
 
     message.textContent = "Login successful!";
