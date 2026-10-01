@@ -52,7 +52,9 @@ footer{background:#111b2d;color:#dce5f5;padding:45px 5%;margin-top:20px}
   <button class="cat" onclick="filterBooks('business',this)">Business & Finance</button>
   <button class="cat" onclick="filterBooks('gk',this)">General Knowledge</button>
   <button class="cat" onclick="filterBooks('other',this)">Other eBooks</button>
-</div></section>
+</div>
+<div class="grid" id="bookgrid"></div>
+</section>
 
 <section class="wrap" id="library" style="display:none"><h2 class="title">My Library</h2><p class="muted">Books purchased by the signed-in student will appear here.</p><div class="library-empty" id="libraryBox">No purchases yet. Demo purchases can be simulated from a book page.</div></section>
 
@@ -61,31 +63,205 @@ footer{background:#111b2d;color:#dce5f5;padding:45px 5%;margin-top:20px}
 <div class="modal" id="modal"><div class="modalbox"><div class="modalhead"><strong id="modalTitle">Book</strong><button class="close" onclick="closeModal()">✕</button></div><div id="modalBody"></div></div></div>
 <footer><b>Exam Booster India</b><p>Educational digital resources • School • UPSC/BPSC • Spoken English</p></footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
-const books=[
-{id:1,cat:'sst',title:'Class 9 SST Midterm Booster',price:99,cover:'CLASS 9\nSST\nMIDTERM BOOSTER',desc:'Crisp notes, MCQs, important questions and revision material.',pdf:'Class_9_SST_History_Chapter_4_Early_Humans_and_Beginning_of_Civilisation_Notes.pdf'},
-{id:2,cat:'sst',title:'Class 10 SST Important Questions',price:99,cover:'CLASS 10\\nSST\\nIMPORTANT Qs',desc:'Exam-focused questions and revision support.'},
-{id:3,cat:'upsc',title:'BPSC Prelims Booster',price:149,cover:'BPSC\\nPRELIMS\\nBOOSTER',desc:'Revision-focused practice material for BPSC preparation.'},
-{id:4,cat:'upsc',title:'UPSC Political Science Revision',price:199,cover:'UPSC\\nPOLITICAL\\nSCIENCE',desc:'A sample product card for a future UPSC eBook.'},
-{id:5,cat:'english',title:'30-Day Spoken English Workbook',price:99,cover:'30-DAY\\nSPOKEN\\nENGLISH',desc:'Daily grammar, vocabulary and speaking practice.'}
-];
-function renderBooks(cat='all'){const g=document.getElementById('bookgrid');g.innerHTML=books.filter(b=>cat==='all'||b.cat===cat).map(b=>`<div class="card"><div class="cover">${b.cover.replaceAll('\\n','<br>')}</div><span class="pill">${b.cat==='sst'?'School NCERT / SST':b.cat==='upsc'?'UPSC / BPSC':'Spoken English'}</span><h3>${b.title}</h3><p class="muted">${b.desc}</p><div class="price">₹${b.price}</div><div class="actions"><button class="btn secondary" onclick="preview(${b.id})">Preview</button><button class="btn primary" onclick="buy(${b.id})">Buy Now</button></div></div>`).join('')}
-function filterBooks(cat,btn){document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active'));btn.classList.add('active');renderBooks(cat)}
-function hideAll(){['home','books','library','login'].forEach(x=>document.getElementById(x).style.display='none')}
-function show(id){hideAll();document.getElementById(id).style.display='block';if(id==='books')renderBooks();window.scrollTo(0,0)}
-function preview(id){
-  const b=books.find(x=>x.id===id);
-  if(b.pdf){
-    openModal(b.title,`<div style="height:80vh"><iframe src="/ExamBooster_India/${encodeURI(b.pdf)}" style="width:100%;height:100%;border:0"></iframe></div>`);
+const SUPABASE_URL = "https://hmuxsdhqvyufblykqwwc.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_ssyQdSfJdvJuSrOQKtlI4w_I1KEhpEG";
+
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+
+let books = [];
+
+const categoryNames = {
+  sst: "School & NCERT",
+  upsc: "UPSC & BPSC",
+  competitive: "Competitive Exams",
+  english: "Spoken English",
+  story: "Story Books",
+  novel: "Novels",
+  romance: "Romance",
+  thriller: "Mystery & Thriller",
+  horror: "Horror",
+  children: "Children's Books",
+  selfhelp: "Self-Help",
+  business: "Business & Finance",
+  gk: "General Knowledge",
+  other: "Other eBooks"
+};
+
+async function loadBooks() {
+  const { data, error } = await supabaseClient
+    .from("books")
+    .select("*")
+    .eq("published", true)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Book loading error:", error);
+    document.getElementById("bookgrid").innerHTML =
+      `<p class="muted">Books load nahi ho pa rahi hain.</p>`;
     return;
   }
-  openModal(b.title,`<div class="reader"><span class="pill">FREE PREVIEW</span><h1>${b.title}</h1><p>${b.desc}</p><div class="success">📖 This is the demo reader.</div></div>`);
+
+  books = data || [];
+  renderBooks();
 }
-function buy(id){const b=books.find(x=>x.id===id);openModal('Checkout',`<div class="checkout"><h2>${b.title}</h2><p class="muted">Demo price: ₹${b.price}</p><p>Production checkout will connect this button to Razorpay. After verified payment, the backend should grant this book to the buyer's account.</p><div class="success">🔒 Demo mode: no real money is charged.</div><br><button class="btn primary" onclick="demoPurchase(${b.id})">Simulate Successful Payment</button></div>`)}
-function demoPurchase(id){const b=books.find(x=>x.id===id);localStorage.setItem('demoPurchase',JSON.stringify(b));closeModal();openLibrary(b)}
-function openLibrary(b){hideAll();document.getElementById('library').style.display='block';document.getElementById('libraryBox').innerHTML=`<div class="card" style="text-align:left"><span class="pill">PURCHASED — DEMO</span><h3>${b.title}</h3><p class="muted">Access is tied to the demo browser.</p><button class="btn primary" onclick="preview(${b.id})">READ BOOK</button></div>`}
-function openModal(title,body){document.getElementById('modalTitle').textContent=title;document.getElementById('modalBody').innerHTML=body;document.getElementById('modal').style.display='block';document.body.style.overflow='hidden'}
-function closeModal(){document.getElementById('modal').style.display='none';document.body.style.overflow='auto'}
-renderBooks();
+
+function renderBooks(cat = "all") {
+  const g = document.getElementById("bookgrid");
+
+  const filtered =
+    cat === "all"
+      ? books
+      : books.filter(b => b.category === cat);
+
+  if (!filtered.length) {
+    g.innerHTML =
+      `<div class="library-empty">Is category mein abhi koi book available nahi hai.</div>`;
+    return;
+  }
+
+  g.innerHTML = filtered.map(b => `
+    <div class="card">
+      <div class="cover">
+        ${escapeHtml(b.title || "eBook")}
+      </div>
+
+      <span class="pill">
+        ${categoryNames[b.category] || "Other eBooks"}
+      </span>
+
+      <h3>${escapeHtml(b.title || "Untitled Book")}</h3>
+
+      <p class="muted">
+        ${escapeHtml(b.description || "Exam-focused digital study material.")}
+      </p>
+
+      <div class="price">₹${Number(b.price || 0)}</div>
+
+      <div class="actions">
+        <button class="btn secondary"
+          onclick="preview(${b.id})">
+          Preview
+        </button>
+
+        <button class="btn primary"
+          onclick="buy(${b.id})">
+          Buy Now
+        </button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function filterBooks(cat, btn) {
+  document.querySelectorAll(".cat")
+    .forEach(x => x.classList.remove("active"));
+
+  btn.classList.add("active");
+  renderBooks(cat);
+}
+
+function hideAll() {
+  ["home", "books", "library", "login"].forEach(x => {
+    document.getElementById(x).style.display = "none";
+  });
+}
+
+function show(id) {
+  hideAll();
+
+  document.getElementById(id).style.display = "block";
+
+  if (id === "books") {
+    renderBooks();
+  }
+
+  window.scrollTo(0, 0);
+}
+
+function preview(id) {
+  const b = books.find(x => x.id === id);
+
+  if (!b) return;
+
+  openModal(
+    b.title,
+    `
+    <div class="reader">
+      <span class="pill">PREVIEW</span>
+      <h1>${escapeHtml(b.title)}</h1>
+
+      <p>
+        ${escapeHtml(
+          b.description || "Book preview will be available here."
+        )}
+      </p>
+
+      <div class="success">
+        📖 Full book access will be available after verified purchase.
+      </div>
+    </div>
+    `
+  );
+}
+
+function buy(id) {
+  const b = books.find(x => x.id === id);
+
+  if (!b) return;
+
+  openModal(
+    "Checkout",
+    `
+    <div class="checkout">
+      <h2>${escapeHtml(b.title)}</h2>
+
+      <p class="muted">
+        Price: ₹${Number(b.price || 0)}
+      </p>
+
+      <div class="success">
+        🔒 Secure checkout will be connected with Razorpay.
+      </div>
+
+      <br>
+
+      <button class="btn primary"
+        onclick="closeModal()">
+        Continue
+      </button>
+    </div>
+    `
+  );
+}
+
+function openModal(title, body) {
+  document.getElementById("modalTitle").textContent = title;
+  document.getElementById("modalBody").innerHTML = body;
+  document.getElementById("modal").style.display = "block";
+  document.body.style.overflow = "hidden";
+}
+
+function closeModal() {
+  document.getElementById("modal").style.display = "none";
+  document.body.style.overflow = "auto";
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+loadBooks();
 </script>
+
 </body></html>
