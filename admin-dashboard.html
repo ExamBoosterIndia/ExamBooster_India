@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Exam Booster India - Admin Dashboard</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    *{
+      box-sizing:border-box;
+    }
+
+    body{
+      margin:0;
+      font-family:Arial,sans-serif;
+      background:#f4f6f8;
+      color:#1f2937;
+    }
+
+    header{
+      background:#111827;
+      color:white;
+      padding:18px 25px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:15px;
+    }
+
+    header h1{
+      margin:0;
+      font-size:22px;
+    }
+
+    .logout{
+      width:auto;
+      padding:9px 16px;
+      background:#ef4444;
+      border:0;
+      border-radius:7px;
+      color:white;
+      cursor:pointer;
+    }
+
+    .container{
+      max-width:1100px;
+      margin:30px auto;
+      padding:0 18px;
+    }
+
+    .card{
+      background:white;
+      border-radius:14px;
+      padding:25px;
+      margin-bottom:25px;
+      box-shadow:0 5px 20px rgba(0,0,0,.08);
+    }
+
+    h2{
+      margin-top:0;
+    }
+
+    label{
+      display:block;
+      font-weight:bold;
+      margin-top:15px;
+      margin-bottom:6px;
+    }
+
+    input,
+    textarea,
+    select{
+      width:100%;
+      padding:12px;
+      border:1px solid #d1d5db;
+      border-radius:8px;
+      font-size:15px;
+    }
+
+    textarea{
+      min-height:100px;
+      resize:vertical;
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
+    }
+
+    .main-btn{
+      margin-top:22px;
+      width:100%;
+      padding:13px;
+      border:0;
+      border-radius:8px;
+      background:#111827;
+      color:white;
+      font-size:16px;
+      cursor:pointer;
+    }
+
+    .main-btn:hover{
+      opacity:.9;
+    }
+
+    #message{
+      margin-top:15px;
+      font-weight:bold;
+      text-align:center;
+    }
+
+    .book{
+      border:1px solid #e5e7eb;
+      padding:15px;
+      border-radius:10px;
+      margin-top:12px;
+      background:#fafafa;
+    }
+
+    .book-title{
+      font-weight:bold;
+      font-size:17px;
+    }
+
+    .book-info{
+      color:#6b7280;
+      font-size:14px;
+      margin-top:5px;
+    }
+
+    .status{
+      display:inline-block;
+      margin-top:8px;
+      padding:4px 9px;
+      border-radius:20px;
+      font-size:12px;
+      background:#dcfce7;
+      color:#166534;
+    }
+
+    @media(max-width:700px){
+      .row{
+        grid-template-columns:1fr;
+      }
+
+      header{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>📚 Exam Booster India — Admin</h1>
+  <button class="logout" onclick="logout()">Logout</button>
+</header>
+
+<div class="container">
+
+  <div class="card">
+
+    <h2>➕ Add New Book</h2>
+
+    <form id="bookForm">
+
+      <label>Book Title</label>
+      <input
+        type="text"
+        id="title"
+        placeholder="Example: Class 9 SST History Notes"
+        required
+      >
+
+      <div class="row">
+
+        <div>
+          <label>Category</label>
+
+          <select id="category" required>
+
+            <option value="">Select Category</option>
+
+            <option value="sst">School & NCERT</option>
+
+            <option value="upsc">UPSC & BPSC</option>
+
+            <option value="competitive">Competitive Exams</option>
+
+            <option value="english">Spoken English</option>
+
+            <option value="story">Story Books</option>
+
+            <option value="novel">Novels</option>
+
+            <option value="romance">Romance</option>
+
+            <option value="thriller">Mystery & Thriller</option>
+
+            <option value="horror">Horror</option>
+
+            <option value="children">Children's Books</option>
+
+            <option value="selfhelp">Self-Help</option>
+
+            <option value="business">Business & Finance</option>
+
+            <option value="gk">General Knowledge</option>
+
+            <option value="other">Other eBooks</option>
+
+          </select>
+        </div>
+
+        <div>
+          <label>Price (₹)</label>
+
+          <input
+            type="number"
+            id="price"
+            min="0"
+            step="1"
+            placeholder="99"
+            required
+          >
+        </div>
+
+      </div>
+
+      <label>Description</label>
+
+      <textarea
+        id="description"
+        placeholder="Write a short description of the book..."
+      ></textarea>
+
+      <label>Book PDF</label>
+
+      <input
+        type="file"
+        id="pdfFile"
+        accept="application/pdf"
+        required
+      >
+
+      <label>Book Cover</label>
+
+      <input
+        type="file"
+        id="coverFile"
+        accept="image/*"
+      >
+
+      <button
+        type="submit"
+        class="main-btn"
+      >
+        📚 Upload & Publish Book
+      </button>
+
+    </form>
+
+    <div id="message"></div>
+
+  </div>
+
+
+  <div class="card">
+
+    <h2>📖 Published Books</h2>
+
+    <div id="bookList">
+      Loading books...
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+  /* =========================
+     SUPABASE CONFIG
+  ========================= */
+
+  const SUPABASE_URL =
+    "https://hmuxsdhqvyufblykqwwc.supabase.co";
+
+  const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_ssyQdSfJdvJuSrOQKtlI4w_I1KEhpEG";
+
+
+  const supabaseClient =
+    supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
+
+
+  /* =========================
+     CHECK ADMIN
+  ========================= */
+
+  async function checkAdmin(){
+
+    const {
+      data: { session }
+    } = await supabaseClient.auth.getSession();
+
+    if(!session){
+
+      window.location.href = "admin.html";
+
+      return null;
+    }
+
+
+    const {
+      data: admin,
+      error
+    } = await supabaseClient
+      .from("admin_users")
+      .select("user_id")
+      .eq("user_id", session.user.id)
+      .maybeSingle();
+
+
+    if(error || !admin){
+
+      await supabaseClient.auth.signOut();
+
+      window.location.href = "admin.html";
+
+      return null;
+    }
+
+
+    return session;
+
+  }
+
+
+  /* =========================
+     LOGOUT
+  ========================= */
+
+  async function logout(){
+
+    await supabaseClient.auth.signOut();
+
+    window.location.href = "admin.html";
+
+  }
+
+
+  /* =========================
+     CREATE SAFE FILE NAME
+  ========================= */
+
+  function safeFileName(name){
+
+    return name
+      .toLowerCase()
+      .replace(/[^a-z0-9.]+/g,"-")
+      .replace(/^-+|-+$/g,"");
+
+  }
+
+
+  /* =========================
+     ADD BOOK
+  ========================= */
+
+  document
+    .getElementById("bookForm")
+    .addEventListener("submit", async function(e){
+
+      e.preventDefault();
+
+
+      const message =
+        document.getElementById("message");
+
+
+      message.textContent =
+        "Uploading book...";
+
+
+      try{
+
+        const session = await checkAdmin();
+
+        if(!session){
+
+          return;
+        }
+
+
+        const title =
+          document.getElementById("title").value.trim();
+
+        const category =
+          document.getElementById("category").value;
+
+        const price =
+          Number(document.getElementById("price").value);
+
+        const description =
+          document.getElementById("description").value.trim();
+
+        const pdfFile =
+          document.getElementById("pdfFile").files[0];
+
+        const coverFile =
+          document.getElementById("coverFile").files[0];
+
+
+        if(!pdfFile){
+
+          throw new Error("Please select a PDF file.");
+
+        }
+
+
+        if(pdfFile.type !== "application/pdf"){
+
+          throw new Error("Only PDF files are allowed.");
+
+        }
+
+
+        /* =========================
+           UNIQUE FILE PREFIX
+        ========================= */
+
+        const unique =
+          Date.now() + "-" +
+          Math.random().toString(36).substring(2,8);
+
+
+        /* =========================
+           PDF UPLOAD
+        ========================= */
+
+        const pdfPath =
+          unique + "-" + safeFileName(pdfFile.name);
+
+
+        const {
+          error: pdfError
+        } = await supabaseClient
+          .storage
+          .from("book-pdfs")
+          .upload(
+            pdfPath,
+            pdfFile,
+            {
+              cacheControl:"3600",
+              upsert:false
+            }
+          );
+
+
+        if(pdfError){
+
+          throw pdfError;
+
+        }
+
+
+        /* =========================
+           COVER UPLOAD
+        ========================= */
+
+        let coverPath = null;
+
+
+        if(coverFile){
+
+          const coverPathName =
+            unique + "-" + safeFileName(coverFile.name);
+
+
+          const {
+            error: coverError
+          } = await supabaseClient
+            .storage
+            .from("book-cover")
+            .upload(
+              coverPathName,
+              coverFile,
+              {
+                cacheControl:"3600",
+                upsert:false
+              }
+            );
+
+
+          if(coverError){
+
+            throw coverError;
+
+          }
+
+
+          coverPath =
+            coverPathName;
+
+        }
+
+
+        /* =========================
+           SAVE BOOK IN DATABASE
+        ========================= */
+
+        const {
+          error: insertError
+        } = await supabaseClient
+          .from("books")
+          .insert({
+
+            title:title,
+
+            category:category,
+
+            price:price,
+
+            description:description,
+
+            pdf_url:pdfPath,
+
+            cover_url:coverPath,
+
+            published:true
+
+          });
+
+
+        if(insertError){
+
+          throw insertError;
+
+        }
+
+
+        message.textContent =
+          "✅ Book uploaded and published successfully!";
+
+
+        document
+          .getElementById("bookForm")
+          .reset();
+
+
+        loadBooks();
+
+      }
+
+      catch(error){
+
+        console.error(error);
+
+        message.textContent =
+          "❌ Error: " + error.message;
+
+      }
+
+    });
+
+
+  /* =========================
+     LOAD BOOKS
+  ========================= */
+
+  async function loadBooks(){
+
+    const list =
+      document.getElementById("bookList");
+
+
+    const {
+      data,
+      error
+    } = await supabaseClient
+      .from("books")
+      .select("*")
+      .eq("published",true)
+      .order("created_at",{ascending:false});
+
+
+    if(error){
+
+      list.innerHTML =
+        "<p>Unable to load books.</p>";
+
+      console.error(error);
+
+      return;
+
+    }
+
+
+    if(!data || data.length === 0){
+
+      list.innerHTML =
+        "<p>No books published yet.</p>";
+
+      return;
+
+    }
+
+
+    list.innerHTML =
+      data.map(book => `
+
+        <div class="book">
+
+          <div class="book-title">
+            ${escapeHtml(book.title)}
+          </div>
+
+          <div class="book-info">
+            Category: ${escapeHtml(book.category || "")}
+            &nbsp; | &nbsp;
+            Price: ₹${book.price || 0}
+          </div>
+
+          <span class="status">
+            Published
+          </span>
+
+        </div>
+
+      `).join("");
+
+  }
+
+
+  /* =========================
+     ESCAPE HTML
+  ========================= */
+
+  function escapeHtml(value){
+
+    return String(value || "")
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;")
+      .replace(/'/g,"&#039;");
+
+  }
+
+
+  /* =========================
+     START
+  ========================= */
+
+  (async function(){
+
+    const session =
+      await checkAdmin();
+
+    if(session){
+
+      loadBooks();
+
+    }
+
+  })();
+
+</script>
+
+</body>
+</html>
