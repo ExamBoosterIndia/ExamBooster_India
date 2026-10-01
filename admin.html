@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exam Booster India - Admin</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    body{
+      margin:0;
+      font-family:Arial,sans-serif;
+      background:#f4f6f8;
+      color:#222;
+    }
+
+    .box{
+      max-width:420px;
+      margin:80px auto;
+      background:white;
+      padding:30px;
+      border-radius:16px;
+      box-shadow:0 8px 30px rgba(0,0,0,.10);
+    }
+
+    h1{
+      text-align:center;
+      margin-bottom:25px;
+    }
+
+    input{
+      width:100%;
+      box-sizing:border-box;
+      padding:13px;
+      margin:8px 0 14px;
+      border:1px solid #ccc;
+      border-radius:8px;
+      font-size:15px;
+    }
+
+    button{
+      width:100%;
+      padding:13px;
+      border:0;
+      border-radius:8px;
+      background:#111827;
+      color:white;
+      font-size:16px;
+      cursor:pointer;
+    }
+
+    button:hover{
+      opacity:.9;
+    }
+
+    #message{
+      margin-top:15px;
+      text-align:center;
+      font-size:14px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+  <h1>📚 Admin Login</h1>
+
+  <input
+    type="email"
+    id="email"
+    placeholder="Admin Email"
+  >
+
+  <input
+    type="password"
+    id="password"
+    placeholder="Password"
+  >
+
+  <button onclick="login()">Login</button>
+
+  <div id="message"></div>
+</div>
+
+<script>
+
+  const SUPABASE_URL =
+    "https://hmuxsdhqvyufblykqwwc.supabase.co";
+
+  const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_ssyQdSfJdvJuSrOQKtlI4w_I1KEhpEG";
+
+  const supabaseClient =
+    supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
+
+  async function login(){
+
+    const email =
+      document.getElementById("email").value.trim();
+
+    const password =
+      document.getElementById("password").value;
+
+    const message =
+      document.getElementById("message");
+
+    if(!email || !password){
+      message.textContent = "Please enter email and password.";
+      return;
+    }
+
+    message.textContent = "Logging in...";
+
+    const { data, error } =
+      await supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+
+    if(error){
+      message.textContent = "Login failed: " + error.message;
+      return;
+    }
+
+    const { data: admin, error: adminError } =
+      await supabaseClient
+        .from("admin_users")
+        .select("user_id")
+        .eq("user_id", data.user.id)
+        .maybeSingle();
+
+    if(adminError || !admin){
+      await supabaseClient.auth.signOut();
+      message.textContent = "You are not authorized as admin.";
+      return;
+    }
+
+    message.textContent = "Login successful!";
+
+    setTimeout(() => {
+      window.location.href = "admin-dashboard.html";
+    }, 800);
+  }
+
+</script>
+
+</body>
+</html>
