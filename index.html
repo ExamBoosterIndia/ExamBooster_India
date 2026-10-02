@@ -319,7 +319,61 @@ async function studentSignup() {
   }
 }
 
+async function loadLibrary() {
+  const libraryGrid = document.getElementById("libraryGrid");
 
+  libraryGrid.innerHTML = "<p class='muted'>Loading your books...</p>";
+
+  const { data: purchases, error } = await supabaseClient
+    .from("purchases")
+    .select(`
+      id,
+      amount,
+      status,
+      books (
+        id,
+        title,
+        category,
+        description,
+        cover_url,
+        pdf_url
+      )
+    `)
+    .eq("user_id", (await supabaseClient.auth.getUser()).data.user.id)
+    .eq("status", "paid")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    libraryGrid.innerHTML =
+      "<p class='muted'>Unable to load your library.</p>";
+    console.error(error);
+    return;
+  }
+
+  if (!purchases || purchases.length === 0) {
+    libraryGrid.innerHTML =
+      "<p class='muted'>You have not purchased any books yet.</p>";
+    return;
+  }
+
+  libraryGrid.innerHTML = purchases.map(item => {
+    const book = item.books;
+
+    return `
+      <div class="card">
+        ${book.cover_url ? `<img src="${escapeHtml(book.cover_url)}" alt="${escapeHtml(book.title)}" style="width:100%;border-radius:12px;">` : ""}
+        <h3>${escapeHtml(book.title)}</h3>
+        <p class="muted">${escapeHtml(book.category || "")}</p>
+        <p>${escapeHtml(book.description || "")}</p>
+
+        <button class="btn primary"
+          onclick="openBook(${book.id})">
+          Open Book
+        </button>
+      </div>
+    `;
+  }).join("");
+}
 async function studentLogin() {
   const email = document.getElementById("authEmail").value.trim();
   const password = document.getElementById("authPassword").value;
@@ -343,12 +397,12 @@ async function studentLogin() {
     return;
   }
 
-  message.textContent = "Login successful!";
+ message.textContent = "Login successful!";
 
-  setTimeout(() => {
-    show("library");
-  }, 500);
-}
+setTimeout(async () => {
+  show("library");
+  await loadLibrary();
+}, 500);
 loadBooks();
 </script>
 
