@@ -58,7 +58,32 @@ footer{background:#111b2d;color:#dce5f5;padding:45px 5%;margin-top:20px}
 
 <section class="wrap" id="library" style="display:none"><h2 class="title">My Library</h2><p class="muted">Books purchased by the signed-in student will appear here.</p><div class="library-empty" id="libraryBox">No purchases yet. Demo purchases can be simulated from a book page.</div></section>
 
-<section class="wrap" id="login" style="display:none"><div class="card checkout"><h2>Student Login</h2><p class="muted">Demo only — real authentication requires a backend.</p><label>Email</label><input class="field" type="email" placeholder="student@example.com"><label>Password</label><input class="field" type="password" placeholder="••••••••"><button class="btn primary" onclick="show('library')">Login Demo</button></div></section>
+<section class="wrap" id="login" style="display:none">
+  <div class="card checkout">
+    <h2>Student Account</h2>
+    <p class="muted">Login or create your account to access My Library.</p>
+
+    <label>Email</label>
+    <input class="field" id="authEmail" type="email"
+      placeholder="student@example.com">
+
+    <label>Password</label>
+    <input class="field" id="authPassword" type="password"
+      placeholder="Minimum 6 characters">
+
+    <div class="actions">
+      <button class="btn primary" onclick="studentLogin()">
+        Login
+      </button>
+
+      <button class="btn secondary" onclick="studentSignup()">
+        Create Account
+      </button>
+    </div>
+
+    <p id="authMessage" class="muted"></p>
+  </div>
+</section>
 
 <div class="modal" id="modal"><div class="modalbox"><div class="modalhead"><strong id="modalTitle">Book</strong><button class="close" onclick="closeModal()">✕</button></div><div id="modalBody"></div></div></div>
 <footer><b>Exam Booster India</b><p>Educational digital resources • School • UPSC/BPSC • Spoken English</p></footer>
@@ -260,7 +285,70 @@ function escapeHtml(value) {
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 }
+async function studentSignup() {
+  const email = document.getElementById("authEmail").value.trim();
+  const password = document.getElementById("authPassword").value;
 
+  const message = document.getElementById("authMessage");
+
+  if (!email || !password) {
+    message.textContent = "Please enter email and password.";
+    return;
+  }
+
+  if (password.length < 6) {
+    message.textContent = "Password must be at least 6 characters.";
+    return;
+  }
+
+  message.textContent = "Creating account...";
+
+  const { data, error } = await supabaseClient.auth.signUp({
+    email: email,
+    password: password
+  });
+
+  if (error) {
+    message.textContent = error.message;
+    return;
+  }
+
+  if (data.user) {
+    message.textContent =
+      "Account created successfully. Please check your email if verification is required.";
+  }
+}
+
+
+async function studentLogin() {
+  const email = document.getElementById("authEmail").value.trim();
+  const password = document.getElementById("authPassword").value;
+
+  const message = document.getElementById("authMessage");
+
+  if (!email || !password) {
+    message.textContent = "Please enter email and password.";
+    return;
+  }
+
+  message.textContent = "Logging in...";
+
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email: email,
+    password: password
+  });
+
+  if (error) {
+    message.textContent = error.message;
+    return;
+  }
+
+  message.textContent = "Login successful!";
+
+  setTimeout(() => {
+    show("library");
+  }, 500);
+}
 loadBooks();
 </script>
 
